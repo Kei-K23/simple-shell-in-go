@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
+	"strings"
 )
 
 func main() {
@@ -17,6 +19,26 @@ func main() {
 			fmt.Fprintln(os.Stderr, err)
 		}
 
-		fmt.Println(input)
+		input = strings.TrimSpace(input)
+
+		if input == "exit" {
+			fmt.Fprintln(os.Stdout, "ByeBye!")
+			os.Exit(0)
+		}
+
+		if err = execInput(input); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
 	}
+}
+
+func execInput(input string) error {
+	args := strings.Split(input, " ")
+
+	cmd := exec.Command(args[0], args[1:]...)
+
+	cmd.Stderr = os.Stderr
+	cmd.Stdout = os.Stdout
+
+	return cmd.Run()
 }
